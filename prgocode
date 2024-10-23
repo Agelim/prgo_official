@@ -1,0 +1,156 @@
+import csv
+import os.path
+import time
+
+def register(name, dob, lbs, ft, pg, bills, medication):
+    try:
+        with open('CSV/Patients.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([name, dob, lbs, ft, pg, bills, medication])
+        print("Processing...")
+        time.sleep(2)
+        print("Registration successful!")
+    except Exception as e:
+        print("Error occurred while registering:", e)
+
+
+def login(name, dob, lbs, ft, pg):
+    try:
+        with open('CSV/Patients.csv', mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[0] == name and row[1] == dob and row[2] == lbs and row[3] == ft and row[4] == pg:
+                    print("Processing...")
+                    time.sleep(2)
+                    print("Patient login successful!")
+                    return True
+            print("Invalid name, DOB, weight, height, or guardian.")
+    except Exception as e:
+        print("Error occurred while logging in:", e)
+    return False
+
+
+def pal(name):
+    print(f"Welcome, {name}!")
+
+    while True:
+        print("\n1. View Profile")
+        print("2. All Buildings")
+        print("3. Check Bills")
+        print("4. Logout")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            view_profile(name)
+        elif choice == '2':
+            buildings()
+        elif choice == '3':
+            bill_check(name)
+        elif choice == '4':
+            print("Logging out...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+def view_profile(name):
+    try:
+        with open('CSV/Patients.csv', mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[0] == name:
+                    print(f"Profile of {name}")
+                    print("Name: " + row[0])
+                    print("DOB: " + row[1])
+                    print("Weight: " + row[2])
+                    print("Height: " + row[3])
+                    print("Guardian: " + row[4])
+                    print("Medical Bills: " + row[5])
+                    print("Medication: " + row[6])
+                    break
+    except Exception as e:
+        print("Error occurred while viewing profile:", e)
+
+
+def buildings():
+    try:
+        print("All Buildings:")
+        print("""
+              Surgical Center - Allows Surgical Procedures
+              Birth Center - Healthcare facility for childbirth
+              Blood Banks - Donor Donated Blood
+              Medical Clinics - Routine Doctor's Appointment
+              Diabetes Office - Learn to manage diabetes
+              Dialysis Center - Patients with kidney disease
+              Imaging/Radiology Center - Allows X-Rays of Patients
+              Orthopedic Center - Muscles and Bones
+              Mental Health - Mental Health and Addiction
+              Urgent Care - On Demand Healthcare
+              Pulmonology - Respiratory System Treatment
+            """)
+    except Exception as e:
+        print("Error occurred while finding all buildings:", e)
+
+
+def bill_check(name):
+    try:
+        with open('CSV/Patients.csv', mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row[0] == name:
+                    print("Medical Bills: " + row[5])
+                    break
+    except Exception as e:
+        print("Error occurred while viewing bills:", e)
+
+
+def create_patientcsv_file():
+    if not os.path.exists('CSV'):
+        os.makedirs('CSV')
+
+    if not os.path.isfile('CSV/Patients.csv'):
+        try:
+            with open('CSV/Patients.csv', mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Name', 'DOB', 'Weight', 'Height', 'Guardian', 'Bills', 'Medication'])
+                print("'Patients.csv' file created with headers.")
+        except Exception as e:
+            print("Error occurred while creating CSV file:", e)
+
+
+def main():
+    create_patientcsv_file()
+    while True:
+        print("\n1. Register")
+        print("2. Login")
+        print("3. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            name = input("Enter Patient Name: ")
+            dob = input("Enter Patient DOB: ")
+            lbs = input("Enter Patient Weight: ")
+            ft = input("Enter Patient Height: ")
+            pg = input("Enter Patient Parent/Guardian: ")
+            bills = input("Enter Patient Bills: ")
+            medication = input("Enter any Patient Medication: ")
+            register(name, dob, lbs, ft, pg, bills, medication)
+        elif choice == '2':
+            name = input("Enter Patient Name: ")
+            dob = input("Enter Patient DOB: ")
+            lbs = input("Enter Patient Weight: ")
+            ft = input("Enter Patient Height: ")
+            pg = input("Enter Patient Parent/Guardian: ")
+            if login(name, dob, lbs, ft, pg):
+                pal(name)
+        elif choice == '3':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
